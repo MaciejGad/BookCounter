@@ -13,22 +13,28 @@ import Cocoa
 #endif
 
 enum Brisk {
+    #if DEBUG
+    static var haltOnError = true
+    #else
     static var haltOnError = false
+    #endif
+    
+    static let verbose = isarg("v")
 }
 
 func printOrDie(_ message: String) {
     if Brisk.haltOnError {
         fatalError(message)
     } else {
-        print(message)
+        errorPrint(message)
     }
 }
 
-func exit(_ message: String = "", code: Int = 0) -> Never {
-    if message.isEmpty == false {
-        print(message)
-    }
 
+func exit(_ message: String = "", code: Int = 0) -> Never {
+    if !message.isEmpty {
+        errorPrint(message)
+    }
     exit(Int32(code))
 }
 
@@ -49,9 +55,12 @@ func bash(_ command: String) -> String {
 
     task.standardOutput = pipe
     task.arguments = ["bash", "-c", command]
-    task.launchPath = "/usr/bin/env"
-    task.launch()
-
+    task.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    do {
+        try task.run()
+    } catch {
+        printOrDie("Failed to run \(command): \(error.localizedDescription)")
+    }
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)!
 

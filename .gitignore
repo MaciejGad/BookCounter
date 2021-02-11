@@ -1,6 +1,8 @@
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+.swiftpm
+reading.json
 
 ## User settings
 xcuserdata/

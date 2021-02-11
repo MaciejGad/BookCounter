@@ -1,25 +1,21 @@
 import Foundation
 
-#if DEBUG
-Brisk.haltOnError = true
-#endif
-
-let usage = "Usage: /script -userId 1234 -name 2k21"
+let usage = "Usage: \(ProcessInfo.processInfo.processName) -userId 1234 -name 2k21"
 
 let userId = getarg("userId", orDie: usage)
 let name = getarg("name", orDie: usage)
 let baseUrlString = getenv("baseUrl", orDie: "Please setup base URL environment variable")
+
 verbosePrint("User id: \(userId)")
 verbosePrint("Shelf name: \(name)")
 
 let shelfes = [Shelf].init(url: "\(baseUrlString)/user/\(userId)/shelves")
-
 verbosePrint("Load:")
 shelfes.forEach { verbosePrint($0) }
-guard let found = (shelfes.first { $0.name == name }) else {
-    fatalError("Can't find \(name) among: \(shelfes.map { $0.name })")
-}
 
+guard let found = (shelfes.first { $0.name == name }) else {
+    exit("Can't find \(name) among: \(shelfes.map { $0.name })", code: 1)
+}
 verbosePrint("Found:")
 verbosePrint(found)
 
