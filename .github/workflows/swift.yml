@@ -16,6 +16,8 @@ jobs:
     - name: Build
       run: swift build 
     - name: Run 
-      run: swift run -userId 89771 -name 2k21 -v
+      run: swift run BookCounter -userId 89771 -name 2k21 -v
+      env: # Or as an environment variable
+        baseUrl: ${{ secrets.BASEURL }}
     - name: Display
       run: cat reading.json
