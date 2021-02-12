@@ -1,0 +1,21 @@
+name: Swift
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: swift build 
+    - name: Run 
+      run: swift run -userId 89771 -name 2k21 -v
+    - name: Display
+      run: cat reading.json
